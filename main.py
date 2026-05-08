@@ -14,7 +14,7 @@ load_dotenv()
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 TYPHOON_API_KEY = os.getenv("TYPHOON_API_KEY")
-TYPHOON_MODEL = os.getenv("TYPHOON_MODEL", "typhoon-v2.1-12b-instruct")
+TYPHOON_MODEL = os.getenv("TYPHOON_MODEL", "typhoon-v2.5-30b-a3b-instruct")
 BOT_PREFIX = os.getenv("BOT_PREFIX", "!")
 PORT = int(os.getenv("PORT", "8080"))
 
