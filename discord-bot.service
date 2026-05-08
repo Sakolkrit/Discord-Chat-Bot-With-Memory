@@ -1,0 +1,17 @@
+[Unit]
+Description=Discord Chat Bot with Memory
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/Discord-Chat-Bot-With-Memory
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/ubuntu/.local/bin"
+ExecStart=/usr/bin/python3 /home/ubuntu/Discord-Chat-Bot-With-Memory/main.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/ubuntu/Discord-Chat-Bot-With-Memory/bot.log
+StandardError=append:/home/ubuntu/Discord-Chat-Bot-With-Memory/bot.log
+
+[Install]
+WantedBy=multi-user.target

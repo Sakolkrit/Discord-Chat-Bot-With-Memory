@@ -35,7 +35,7 @@ system_prompt = '''
 #       }, ... 
 # }
 conversation_context = {}
-conversation_context_limit = 8 # Maximum amount of messages per chat
+conversation_context_limit = 10 # Maximum amount of messages per chat
 # -----------------------
 
 
