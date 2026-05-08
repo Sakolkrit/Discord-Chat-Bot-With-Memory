@@ -235,8 +235,8 @@ async def start_health_server():
 
 
 async def main():
-    await init_db()
     await start_health_server()
+    await init_db()
     await bot.start(DISCORD_TOKEN)
 
 
