@@ -40,9 +40,13 @@ if not TYPHOON_API_KEY:
 if not DATABASE_URL:
     raise ValueError("Missing DATABASE_URL")
 
-intents = discord.Intents.default()
-intents.message_content = True
-bot = commands.Bot(command_prefix=BOT_PREFIX, intents=intents)
+def make_bot() -> commands.Bot:
+    intents = discord.Intents.default()
+    intents.message_content = True
+    return commands.Bot(command_prefix=BOT_PREFIX, intents=intents)
+
+
+bot = make_bot()
 
 db_pool: asyncpg.Pool = None
 
@@ -235,6 +239,7 @@ async def start_health_server():
 
 
 async def run_bot():
+    global bot
     backoff = 300  # 5 minutes initial wait
     max_backoff = 1800  # 30 minutes max
 
@@ -251,6 +256,13 @@ async def run_bot():
                 )
                 await asyncio.sleep(backoff)
                 backoff = min(backoff * 2, max_backoff)
+                # Recreate bot to avoid stale internal HTTP session state
+                if not bot.is_closed():
+                    await bot.close()
+                bot = make_bot()
+            elif e.status == 401:
+                logger.error("Discord token is invalid or has been invalidated. Check DISCORD_TOKEN in Render env vars.")
+                raise
             else:
                 raise
         except Exception as e:
