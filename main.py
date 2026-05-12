@@ -234,10 +234,34 @@ async def start_health_server():
     logger.info(f"Health server running on port {PORT}")
 
 
+async def run_bot():
+    backoff = 300  # 5 minutes initial wait
+    max_backoff = 1800  # 30 minutes max
+
+    while True:
+        try:
+            logger.info("Connecting to Discord...")
+            await bot.start(DISCORD_TOKEN)
+            break
+        except discord.errors.HTTPException as e:
+            if e.status == 429:
+                logger.warning(
+                    f"Discord rate limited (429/1015). Render IP is temporarily banned by Cloudflare. "
+                    f"Waiting {backoff}s before retry..."
+                )
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, max_backoff)
+            else:
+                raise
+        except Exception as e:
+            logger.error(f"Unexpected error connecting to Discord: {e}")
+            raise
+
+
 async def main():
     await start_health_server()
     await init_db()
-    await bot.start(DISCORD_TOKEN)
+    await run_bot()
 
 
 if __name__ == "__main__":
